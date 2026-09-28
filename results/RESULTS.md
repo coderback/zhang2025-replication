@@ -75,26 +75,30 @@ Andrews (2026) also failed to replicate the paper:
 - **Publication:** "A Replication Study of Zhang (2025): Why News Sentiment Fails to Predict Asset Returns", SSRN
   6426038, 16 Mar 2026 ([SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6426038),
   [code](https://github.com/jandrews65/zhang2025)).
-- **Result:** mean AUC 0.50 and accuracy 49.5% across EUR/USD, SPY, USO, GLD and SLV.
+- **Result:** mean AUC 0.50 and accuracy 51.2% across EUR/USD, SPY, USO, GLD and SLV (primary analysis); a
+  specification-matched EUR/USD run with the paper's filter also fails (Section 5 of the SSRN version).
+- **Checked against the SSRN PDF** (dated 1 Mar 2026, posted 16 Mar); the repository manuscript is an earlier
+  draft without Section 5.
 - **Author contact:** he contacted the author on 15 Feb 2026 and had no reply at submission.
 
 Our replication agrees and adds three things:
 
 | | Andrews (2026) | This replication (F1) |
 |---|---|---|
-| Event filter | Manuscript: all US-related event types, the paper's CAMEO 100–199 filter **not applied** (event codes discarded at ingestion). A later repository commit (1 Mar 2026) adds an EUR/USD-only run with the filter (AUC 0.51) | The paper's filter (EventBaseCode 100–199), top 100 per day |
+| Event filter | Primary analysis: all US-related event types, filter not applied. Section 5 ("exact replication"): the paper's EventCode 100–199 filter and top 100 per day, EUR/USD only (AUC 0.51, Sharpe 0.10 ± 0.91 across folds, win 51.2%) | The paper's filter (EventBaseCode 100–199), top 100 per day, on all three assets |
 | Assets | EUR/USD plus SPY, USO, GLD, SLV (not the paper's USD/JPY or ZN) | The paper's three: EUR/USD, USD/JPY, ZN |
 | Timing diagnosis | Discusses leakage as a possible cause | **Tests it:** strict (S) and a one-day look-ahead (L) both give ~0, so a news-timing leak can't explain the paper |
-| Headlines | Scraped (79% success) | URL slugs (93%), validated against 389 live titles (corr 0.66) |
+| Headlines | Scraped (79% success); Section 5: 91% URL-extracted, 9% proxy strings (URL-only gives the same result) | URL slugs (93%), validated against 389 live titles (corr 0.66) |
 | Protocol | Walk-forward with anti-leakage checks | Pre-registered, with random-sign twins at identical costs |
-| Consistency | Its comparison table lists a Sharpe of 2.20* alongside AUC 0.478, and it reports its own backtest bugs (Sharpe 11–16 before fixes) | All 18 combinations between −1.00 and +0.02 |
+| Backtest | Reports an initial Sharpe of 2.20 flagged as affected by calculation errors, and early bugs giving Sharpe 11–16 | All 18 combinations between −1.00 and +0.02 |
 
 Andrews also repeats the paper's description of codes 100–199 as "cooperation". In CAMEO they are demand, threat,
 protest, coercion and violence codes.
 
 **Implication for publishing:** a replication note from us would be the *second* independent failure. It should cite
-Andrews (2026) and lead with what's new: the paper's own filter and assets, plus the timing test that rules out a
-simple look-ahead leak.
+Andrews (2026) and lead with what's new: the paper's filter on USD/JPY and ZN (untested so far), the timing
+test that rules out a news-timing leak, pre-registration with random-sign twins, and the quantified price-feature
+leak illustration.
 
 ## Programme status
 F1 is a failed replication, not a new signal. The programme's tally stays at 22 tests, and nothing is confirmed.

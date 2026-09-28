@@ -34,7 +34,8 @@ timing cannot explain the reported performance; this rejects my own pre-register
 post hoc illustration, a one-row shift in the lagged-return feature produces Sharpe ratios of 15--18, and applying
 it to a random 39--48\% of days yields win rates and Sharpe ratios of the reported order. The reported results are
 therefore unlikely to come from news sentiment. The findings agree with an independent replication by
-\citet{andrews2026} and extend it to the paper's own event filter and assets.
+\citet{andrews2026}, which tested EUR/USD, and extend it to the paper's other two assets and to a direct test of the
+timing mechanism.
 \end{abstract}
 
 \noindent\textbf{Keywords:} replication, news sentiment, FinBERT, GDELT, foreign exchange, Treasury futures,
@@ -47,19 +48,19 @@ premium \citep{goyal2024}. A cost-adjusted Sharpe ratio near six from public new
 extraordinary result. \citet{zhang2025} reports exactly that. It combines the GDELT event database, the FinBERT
 language model \citep{araci2019} and gradient-boosted trees \citep{chen2016}. The paper states that its code is
 public, but the linked repository was not accessible when this note was written (September 2026). A first
-independent replication \citep{andrews2026} found no predictive power, but it departed from the original in ways that
-leave the question open:
+independent replication \citep{andrews2026} found no predictive power. Its primary analysis kept all U.S.-related event
+types across five assets, and a second, specification-matched analysis with the paper's CAMEO 100--199 filter found no
+signal for EUR/USD (AUC 0.51, Sharpe ratio $0.10\pm0.91$ across folds). Two questions remain open:
 \begin{itemize}
-  \item its reported analysis kept all U.S.-related event types rather than the paper's CAMEO 100--199 filter (its
-        repository also contains a later EUR/USD run with the filter, which likewise finds no signal);
-  \item it tested EUR/USD but not the paper's other two assets;
-  \item it discussed leakage and calculation errors as possible explanations but did not test a specific mechanism.
+  \item the paper's other two assets, USD/JPY and 10-year Treasury futures, have not been tested with its filter;
+  \item \citet{andrews2026} lists leakage and calculation errors, including the use of same-day market data, as
+        plausible explanations, but no specific mechanism has been tested.
 \end{itemize}
 
 This note makes three contributions:
 \begin{enumerate}
-  \item It follows the original specification on the dimensions where \citet{andrews2026} departed: the paper's
-        event filter and its three assets.
+  \item It applies the original event filter and specification to all three of the paper's assets, including
+        USD/JPY and ZN for the first time.
   \item The design, the timing variants and the verdict criteria were pre-registered before any sentiment score or
         model output was computed. Every result is compared with random-sign strategies at identical costs.
   \item Three timing variants isolate the role of news alignment and show that it cannot generate the reported
@@ -227,8 +228,9 @@ take the leaked position with probability $q$, choosing $q$ so that the expected
   \item ZN, $q=0.39$: win rate 64.0\%, Sharpe 3.6 (reported 66.1\% and 4.65).
 \end{itemize}
 Win rates fall slightly short of the target because mixing positions adds trading costs. The reported win rates and
-Sharpe ratios are thus jointly of the order that a partial leak produces. \citet{andrews2026} reports a related
-experience: bugs in its own backtest initially produced Sharpe ratios of 11--16 at an AUC of 0.50. None of this is
+Sharpe ratios are thus jointly of the order that a partial leak produces. This is one concrete form of the
+``same-day market data'' leakage that \citet{andrews2026} lists as a plausible source, and that study reports a
+related experience: bugs in its own backtest initially produced Sharpe ratios of 11--16 at an AUC of 0.50. None of this is
 evidence of what the original code did, which cannot be inspected. It shows how a one-line error of this kind
 produces numbers of the reported order, whereas no treatment of the news timing does. Other candidates, including
 leakage through hyperparameter selection or feature scaling fitted on the full sample, would need the original code
