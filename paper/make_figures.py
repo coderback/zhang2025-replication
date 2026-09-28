@@ -49,3 +49,33 @@ for a in PAPER_CAGR:
     p = r[f"{a}_P"].dropna()
     p = p[p.index >= "2017-01-01"]
     print(f"  {a}: Sharpe {sharpe(p):+.2f}, win {(p > 0).mean():.1%}")
+
+# Partial leak (post hoc): each day independently uses the M position with probability q, else the P position,
+# with q set so that the expected win rate equals the original's; costs recomputed on the mixed positions.
+from zhang_replication.replicate import COST_RT, backtest, load_prices  # noqa: E402
+
+PAPER_WIN = {"EURUSD": 0.727, "USDJPY": 0.721, "ZN": 0.661}
+prices = load_prices()
+print("Partial leak, 200 draws (mean [5%, 95%]):")
+for a in PAPER_CAGR:
+    c = prices[a][prices[a].index <= "2024-09-30"]
+    fwd = np.log(c).diff().shift(-1)
+    P, M = r[f"{a}_P"].dropna(), r[f"{a}_M"].dropna()
+    idx = P.index.intersection(M.index)
+    ret = np.expm1(fwd.reindex(idx))
+
+    def pos(s):  # the sign whose gross return is closest to the net strategy return
+        s = s.reindex(idx)
+        return np.where(np.abs(s - ret) <= np.abs(s + ret), 1.0, -1.0)
+
+    pP, pM = pos(P), pos(M)
+    q = (PAPER_WIN[a] - 0.5) / ((M.reindex(idx) > 0).mean() - 0.5)
+    rng = np.random.default_rng(1)
+    sh, win = [], []
+    for _ in range(200):
+        mix = np.where(rng.random(len(idx)) < q, pM, pP)
+        x = backtest(pd.Series(np.where(mix > 0, 0.9, 0.1), idx), fwd, COST_RT[a])
+        sh.append(sharpe(x))
+        win.append((x > 0).mean())
+    print(f"  {a}: q={q:.2f}, win {np.mean(win):.1%}, Sharpe {np.mean(sh):.2f} "
+          f"[{np.percentile(sh, 5):.2f}, {np.percentile(sh, 95):.2f}]")

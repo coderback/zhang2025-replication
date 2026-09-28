@@ -31,7 +31,9 @@ paper's costs:
 | ZN | L | −0.48 | −0.71 | 0.98 | −0.67 |
 
 - **Win rates:** 47–52% everywhere.
-- **Against the random-sign twins:** no row beats them at identical costs.
+- **Against the random-sign twins:** no XGBoost row beats their 95th percentile at identical costs. The one
+  logistic exception, ZN L (−0.48 vs −0.67), changes position on 43% of days against the twins' 50%, so it
+  pays less in costs; before costs its Sharpe (+0.49) is below the twins' 95th percentile (+0.55, 200 draws).
 - **Why the ZN twins are negative:** daily sign flips at 0.05% per round trip cost several percent a year.
 
 ## What this means
@@ -80,7 +82,7 @@ Our replication agrees and adds three things:
 
 | | Andrews (2026) | This replication (F1) |
 |---|---|---|
-| Event filter | All US-related events; the paper's CAMEO 100–199 filter **not applied** (event codes discarded at ingestion) | The paper's filter (EventBaseCode 100–199), top 100 per day |
+| Event filter | Manuscript: all US-related event types, the paper's CAMEO 100–199 filter **not applied** (event codes discarded at ingestion). A later repository commit (1 Mar 2026) adds an EUR/USD-only run with the filter (AUC 0.51) | The paper's filter (EventBaseCode 100–199), top 100 per day |
 | Assets | EUR/USD plus SPY, USO, GLD, SLV (not the paper's USD/JPY or ZN) | The paper's three: EUR/USD, USD/JPY, ZN |
 | Timing diagnosis | Discusses leakage as a possible cause | **Tests it:** strict (S) and a one-day look-ahead (L) both give ~0, so a news-timing leak can't explain the paper |
 | Headlines | Scraped (79% success) | URL slugs (93%), validated against 389 live titles (corr 0.66) |
