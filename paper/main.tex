@@ -155,7 +155,8 @@ replication belongs to (Appendix~\ref{tab:deviations}). The pre-registered verdi
 the logistic results and the other variants are diagnostic.
 
 \section{Results}
-Table~\ref{tab:headline} compares the headline numbers, and Table~\ref{tab:all} reports every combination.
+Table~\ref{tab:headline} compares the headline numbers, Table~\ref{tab:all} reports every combination, and
+Figure~\ref{fig:cum} shows the growth of \$1 against the reported growth rates.
 The outcome is the pre-registered ``not replicated, unexplained'' verdict: P is below a Sharpe ratio of 1 on every
 asset, and L is below 2.
 \begin{itemize}
@@ -209,6 +210,19 @@ not the original's equity curve.}\label{fig:cum}
 \end{figure}
 
 \section{What could produce the reported numbers?}
+Figure~\ref{fig:sharpe} places every explanation on one axis. The three news-timing variants sit inside the range of
+random trading, a fully shifted price feature overshoots the reported figures threefold, and a partial shift lands
+on them.
+
+\begin{figure}[t]\centering
+\includegraphics[width=\linewidth]{fig_sharpe.pdf}
+\caption{Sharpe ratios by explanation, XGBoost, out of sample, net of costs. Blue: the pre-registered news timing
+variants. Red: the post hoc price-feature shift, on all days or on a random share of days chosen to match the
+reported win rate (mean and 5--95\% range over 200 draws). Gray band: 5--95\% range of 200 random-sign strategies
+on the same days at the same costs; for ZN it lies below zero because frequent position changes are costly.}
+\label{fig:sharpe}
+\end{figure}
+
 \paragraph{News timing cannot.} Variant L gives the model a full day of future headlines and still earns nothing.
 Summarised as in the original, these headlines (top-coverage conflict and coercion events) carry no usable
 information about next-day FX or Treasury moves. P, S and L cover news from before, on and after the prediction day,
