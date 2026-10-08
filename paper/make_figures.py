@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 import matplotlib
+import matplotlib.dates
 
 matplotlib.use("Agg")
 import matplotlib.lines  # noqa: F401
@@ -93,7 +94,7 @@ rows = [  # label, kind (top to bottom)
     ("S: previous day's news (strict)", "S"),
 ]
 xgb = res[res.model == "xgb"].set_index(["asset", "variant"])["sharpe"]
-fig, axes = plt.subplots(1, 3, figsize=(10, 3.2), sharey=True)
+fig, axes = plt.subplots(1, 3, figsize=(6.5, 3.3), sharey=True)
 for ax, a in zip(axes, ASSETS):
     ax.axvspan(*twins[a], color=BAND, lw=0, zorder=0)
     ax.axvline(0, color="0.6", lw=0.6, zorder=1)
@@ -101,25 +102,26 @@ for ax, a in zip(axes, ASSETS):
         if kind in ("P", "S", "L"):
             v = xgb[(a, kind)]
             ax.plot(v, y, "o", color=NEWS, ms=5, zorder=3)
-            ax.annotate(f"{v:+.2f}".replace("-", "−"), (v, y), xytext=(6, 0), textcoords="offset points", va="center", fontsize=7)
+            ax.annotate(f"{v:+.2f}".replace("-", "−"), (v, y), xytext=(6, 0), textcoords="offset points", va="center", fontsize=6.5)
         elif kind == "partial":
             v = leak[a]["mean"]
             ax.errorbar(v, y, xerr=[[v - leak[a]["lo"]], [leak[a]["hi"] - v]], fmt="o", color=SHIFT, ms=5,
                         capsize=2, lw=1, zorder=3)
-            ax.annotate(f"{v:.1f}  ({leak[a]['q']:.0%} of days)", (leak[a]["hi"], y), xytext=(4, 0),
-                        textcoords="offset points", va="center", fontsize=7, color=SHIFT)
+            ax.annotate(f"{v:.1f} ({leak[a]['q']:.0%})", (leak[a]["hi"], y), xytext=(4, 0),
+                        textcoords="offset points", va="center", fontsize=6.5, color=SHIFT)
         elif kind == "full":
             v = sharpe(r[f"{a}_M"])
             ax.plot(v, y, "o", color=SHIFT, ms=5, zorder=3)
-            ax.annotate(f"{v:.1f}", (v, y), xytext=(0, 6), textcoords="offset points", ha="center", fontsize=7,
+            ax.annotate(f"{v:.1f}", (v, y), xytext=(0, 6), textcoords="offset points", ha="center", fontsize=6.5,
                         color=SHIFT)
         else:
             v = PAPER_SHARPE[a]
             ax.plot(v, y, "D", color=REPORTED, ms=5, zorder=3)
-            ax.annotate(f"{v:.2f}", (v, y), xytext=(6, 0), textcoords="offset points", va="center", fontsize=7)
+            ax.annotate(f"{v:.2f}", (v, y), xytext=(6, 0), textcoords="offset points", va="center", fontsize=6.5)
     ax.set_title(NAMES[a])
-    ax.set_xlim(-2.5, 20)
-    ax.set_xlabel("Annualised Sharpe ratio, net of costs")
+    ax.set_xlim(-3, 21)
+    ax.set_xticks([0, 5, 10, 15, 20])
+
     ax.grid(axis="x", alpha=0.3, lw=0.5)
 axes[0].set_yticks(range(len(rows)), [lbl for lbl, _ in reversed(rows)])
 axes[0].set_ylim(-0.6, len(rows) - 0.3)
@@ -129,13 +131,14 @@ handles = [
     matplotlib.lines.Line2D([], [], marker="o", ls="", color=SHIFT, ms=5, label="Price-feature shift (post hoc)"),
     matplotlib.patches.Patch(color=BAND, label="Random-sign strategies, 5–95%"),
 ]
-fig.legend(handles=handles, loc="lower center", ncol=4, frameon=False, fontsize=7.5)
-fig.tight_layout(rect=(0, 0.07, 1, 1))
+axes[1].set_xlabel("Annualised Sharpe ratio, net of costs")
+fig.legend(handles=handles, loc="lower center", ncol=2, frameon=False, fontsize=7)
+fig.tight_layout(rect=(0, 0.1, 1, 1), w_pad=0.6)
 fig.savefig(OUT / "fig_sharpe.pdf")
 fig.savefig(OUT / "fig_sharpe.png", dpi=160)
 
 # ------------------------------------------------------------------ Figure 2: growth of $1
-fig, axes = plt.subplots(1, 3, figsize=(10, 3.0), sharey=True)
+fig, axes = plt.subplots(1, 3, figsize=(6.5, 2.5), sharey=True)
 for ax, a in zip(axes, ASSETS):
     s = r[f"{a}_P"].dropna()
     years = np.arange(len(s)) / 252
@@ -148,9 +151,11 @@ for ax, a in zip(axes, ASSETS):
     ax.yaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
     ax.set_title(NAMES[a])
     ax.grid(alpha=0.3, which="major", lw=0.5)
+    ax.xaxis.set_major_locator(matplotlib.dates.YearLocator(2))
+    ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter("%Y"))
 axes[0].set_ylim(0.5, 60)
 axes[0].set_ylabel("Growth of $1 (log scale)")
-axes[2].legend(frameon=False, loc="upper left")
+axes[2].legend(frameon=False, loc="upper left", fontsize=6.5)
 fig.tight_layout()
 fig.savefig(OUT / "fig_cumulative.pdf")
 fig.savefig(OUT / "fig_cumulative.png", dpi=160)
