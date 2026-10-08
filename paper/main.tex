@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
-\usepackage{amsmath,booktabs,graphicx,hyperref,caption}
+\usepackage{amsmath,array,booktabs,graphicx,hyperref,caption}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \usepackage[round]{natbib}
 \hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
 
@@ -298,7 +299,7 @@ case study. arXiv:2505.16136v1.
 
 \appendix
 \section{Deviations from the original}\label{tab:deviations}
-\begin{tabular}{p{0.28\linewidth}p{0.32\linewidth}p{0.32\linewidth}}\toprule
+\begin{tabular}{L{0.28\linewidth}L{0.32\linewidth}L{0.32\linewidth}}\toprule
 Item & Original & This replication\\\midrule
 GDELT source & ``GDELT v2 API'', all events & GDELT 1.0 daily exports (same event fields)\\
 Headline text & Scraped page titles & URL slugs (validated: corr.\ 0.66)\\
