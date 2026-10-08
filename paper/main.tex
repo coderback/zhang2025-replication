@@ -28,7 +28,7 @@ ratios of 5.87, 4.65 and 4.65 and daily win rates of 66--73\%. I rebuild the pip
 following its event filter, sentiment scoring, feature set, model classes, expanding-window validation and cost
 assumptions on the paper's three assets, with headline text taken from article URLs rather than scraped pages. In a
 pre-registered test, the XGBoost strategy earns Sharpe ratios of $-0.43$, $-0.05$ and $-0.73$, with win rates of
-49--52\%, and none of the 18 asset $\times$ timing $\times$ model combinations earns a positive Sharpe ratio above
+49--52\%, and the best of the 18 asset $\times$ timing $\times$ model combinations has a Sharpe ratio of only
 $0.02$. A variant that deliberately feeds the model the \emph{next} day's news also earns nothing, so misaligned news
 timing cannot explain the reported performance; this rejects my own pre-registered hypothesis that it would. In a
 post hoc illustration, a one-row shift in the lagged-return feature produces Sharpe ratios of 15--18, and applying
@@ -128,7 +128,7 @@ The 237,618 unique slugs are scored with ProsusAI/FinBERT (maximum 64 tokens, wh
 \paragraph{Features, targets and models.} Features follow Sections~3.3--3.4 of the original as specified. Prices are
 Yahoo Finance closes for \texttt{EURUSD=X}, \texttt{USDJPY=X} and \texttt{ZN=F}, as in the original. The ZN series is
 used as downloaded, without the roll adjustment the original describes. The target is
-$y_t=\mathbb{1}[\log(P_{t+1}/P_t)>0]$. Both models are tuned by an inner \texttt{TimeSeriesSplit(3)} on each
+$y_t=\mathbf{1}[\log(P_{t+1}/P_t)>0]$. Both models are tuned by an inner \texttt{TimeSeriesSplit(3)} on each
 training window only (the original uses five inner folds for XGBoost):
 \begin{itemize}
   \item logistic regression, $C\in\{0.01,0.1,1,10\}$;
@@ -241,7 +241,8 @@ take the leaked position with probability $q$, choosing $q$ so that the expected
   \item USD/JPY, $q=0.46$: win rate 72.8\%, Sharpe 5.4 (reported 72.1\% and 4.65);
   \item ZN, $q=0.39$: win rate 64.0\%, Sharpe 3.6 (reported 66.1\% and 4.65).
 \end{itemize}
-Win rates fall slightly short of the target because mixing positions adds trading costs. The reported win rates and
+Realised win rates land within about two points of the targets: the choice of $q$ assumes that the other days win
+half the time, while their actual win rates are 48.8--51.9\%. The reported win rates and
 Sharpe ratios are thus jointly of the order that a partial leak produces. This is one concrete form of the
 ``same-day market data'' leakage that \citet{andrews2026} lists as a plausible source, and that study reports a
 related experience: bugs in its own backtest initially produced Sharpe ratios of 11--16 at an AUC of 0.50. None of this is
