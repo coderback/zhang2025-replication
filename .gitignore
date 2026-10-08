@@ -3,3 +3,10 @@ __pycache__/
 *.pyc
 .venv/
 .pytest_cache/
+
+# LaTeX build output
+*.aux
+*.log
+*.out
+*.synctex.gz
+paper/main.pdf
