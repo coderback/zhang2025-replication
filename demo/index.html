@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zhang 2025 Replication Record</title>
+<meta name="description" content="A pre-registered replication of a news-sentiment trading paper that reports Sharpe ratios near 5. All 18 asset, timing and model combinations are shown; none replicates.">
+<style>
+:root{
+  --bg:#faf8f3; --panel:#ffffff; --ink:#18181d; --muted:#5d5d68; --line:#dedad0;
+  --blue:#1f5fbf; --bluefill:#3f7fdc; --red:#b3321f; --redfill:#d9503a; --gray:#8a8a95; --soft:#efece4; --focus:#1b5fd6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101114; --panel:#17191e; --ink:#ececf1; --muted:#a0a0ad; --line:#2a2d35;
+    --blue:#7fb0ff; --bluefill:#5b9bff; --red:#ff8d78; --redfill:#ff6f57; --gray:#7c7c88; --soft:#20232a; --focus:#9cc0ff;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101114; --panel:#17191e; --ink:#ececf1; --muted:#a0a0ad; --line:#2a2d35;
+  --blue:#7fb0ff; --bluefill:#5b9bff; --red:#ff8d78; --redfill:#ff6f57; --gray:#7c7c88; --soft:#20232a; --focus:#9cc0ff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 ui-serif,Georgia,"Iowan Old Style",Cambria,serif;-webkit-text-size-adjust:100%}
+.sans,button,select,table,.kpi,.tag,nav,svg text,.legend{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--blue)}
+a:focus-visible,button:focus-visible,summary:focus-visible,select:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px}
+.num{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;background:var(--panel);padding:8px 12px;z-index:9}
+.topbar{display:flex;justify-content:space-between;gap:12px;padding:12px 0;font-size:13px;color:var(--muted)}
+.topbar a{font-weight:600;text-decoration:none}
+.hero{padding:30px 0 26px;border-bottom:1px solid var(--line)}
+.tag{font:700 12px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.stamp{display:inline-block;border:3px solid var(--red);color:var(--red);font:800 clamp(20px,4vw,30px)/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;padding:8px 14px;border-radius:4px;transform:rotate(-2deg);margin:14px 0 6px}
+h1{font-size:clamp(28px,5.6vw,48px);line-height:1.08;margin:10px 0 12px;letter-spacing:-.02em;font-weight:700}
+.lede{font-size:18px;color:var(--muted);max-width:66ch;margin:0}
+.note{margin:18px 0 0;padding:12px 14px;border:1px solid var(--line);border-left:5px solid var(--blue);background:var(--panel);border-radius:6px;font-size:14.5px;font-family:ui-sans-serif,system-ui,sans-serif}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px}
+.kpi b{display:block;font-size:26px;letter-spacing:-.02em}
+.kpi span{font-size:13px;color:var(--muted)}
+nav.jump{display:flex;gap:6px;flex-wrap:wrap;padding:14px 0 0;font-size:14px}
+nav.jump a{padding:4px 10px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--ink);background:var(--panel)}
+section{padding:34px 0;border-top:1px solid var(--line)}
+section:first-of-type{border-top:0}
+h2{font-size:clamp(22px,4vw,30px);margin:0 0 6px;letter-spacing:-.01em}
+h3{font-size:17px;margin:20px 0 6px;font-family:ui-sans-serif,system-ui,sans-serif}
+.sub{color:var(--muted);margin:0 0 14px;max-width:72ch}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px}
+.controls{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-end;margin:0 0 14px}
+.cl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px;font-family:ui-sans-serif,system-ui,sans-serif}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:6px 12px;border-radius:999px;font-size:14px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chk{display:flex;gap:8px;align-items:center;font-size:14.5px;min-height:38px;cursor:pointer;font-family:ui-sans-serif,system-ui,sans-serif}
+.chk input{width:18px;height:18px;accent-color:var(--red)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child,td.l,th.l{text-align:left}
+th{color:var(--muted);font-weight:600;font-size:12px}
+.neg{color:var(--red)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.legend{font-size:13px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+svg text{fill:var(--muted);font-size:11px}
+svg .g{stroke:var(--line)}svg .lbl{fill:var(--ink)}
+svg .pt{cursor:pointer}svg .pt:focus{outline:none;stroke:var(--focus);stroke-width:3}
+figure{margin:0}
+figure img{width:100%;height:auto;border:1px solid var(--line);border-radius:6px;background:#fff}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px}
+.posthoc{border-left:5px solid var(--red);background:color-mix(in srgb,var(--red) 7%,var(--panel));padding:12px 14px;border-radius:6px;font-size:15px}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.flow div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:14.5px}
+.flow b{display:block;font-family:ui-sans-serif,system-ui,sans-serif}
+.cav li{margin:7px 0}
+footer{border-top:1px solid var(--line);padding:26px 0 48px;color:var(--muted);font-size:14px;font-family:ui-sans-serif,system-ui,sans-serif}
+#err{display:none;padding:12px;border:1px solid var(--red);border-radius:8px;margin:16px 0}
+@media (max-width:820px){.kpis{grid-template-columns:1fr 1fr}.two,.flow{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:440px){.kpis{grid-template-columns:1fr}}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <div class="topbar sans"><span class="num">zhang2025-replication</span><a href="https://github.com/coderback/zhang2025-replication">View the repo on GitHub</a></div>
+  <div class="hero">
+    <div class="tag">Pre-registered replication</div>
+    <div class="stamp" role="img" aria-label="Verdict: not replicated">NOT REPLICATED</div>
+    <h1>Does news sentiment earn a Sharpe ratio near 5? Rebuilt from the paper, it earns nothing.</h1>
+    <p class="lede">Zhang (2025) reports cost-adjusted out-of-sample Sharpe ratios of 5.87 (EUR/USD), 4.65 (USD/JPY) and 4.65 (10-year Treasury futures) from FinBERT sentiment of GDELT headlines and an XGBoost classifier. This replication followed the paper's event filter, assets, features, models, validation and costs, and registered its design and verdict rules before any result existed.</p>
+    <p class="note"><strong>Saved results, read-only.</strong> Every number and figure comes from the repo's <span class="num">results/</span> folder and <span class="num">paper/</span> figures. Nothing is run in your browser. This page describes the replication's findings about a published method; it makes no claim about why the original numbers arose.</p>
+    <div class="kpis">
+      <div class="kpi"><b class="num">18 of 18</b><span>asset, timing and model combinations fail. Sharpe ratios range from -1.00 to +0.02.</span></div>
+      <div class="kpi"><b class="num">-0.43</b><span>EUR/USD XGBoost Sharpe under the paper's timing, against 5.87 reported</span></div>
+      <div class="kpi"><b class="num">47-52%</b><span>win rates across every combination, against 66-73% reported</span></div>
+      <div class="kpi"><b class="num">0 of 9</b><span>XGBoost rows beat the 95th percentile of random-sign trading at the same costs</span></div>
+    </div>
+    <nav class="jump" aria-label="Sections"><a href="#headline">Paper vs replication</a><a href="#all">All 18 combinations</a><a href="#growth">Growth of $1</a><a href="#why">The one-row shift</a><a href="#design">Design</a><a href="#limits">Limits</a></nav>
+  </div>
+</div>
+
+<main id="main"><div class="wrap">
+<div id="err" role="alert">The saved data failed to load. Please reload the page.</div>
+
+<section id="headline">
+  <h2>The paper's claim, and what came back</h2>
+  <p class="sub">XGBoost, pooled out of sample from mid-2016 to September 2024, net of costs, using the timing the paper describes (variant P).</p>
+  <div class="panel tablewrap"><table id="headTbl"></table></div>
+  <p class="legend">Paper figures are as reported (Sharpe and win rate, Table 1 of the paper). Replication figures are from <span class="num">results/F1_results.csv</span>. The one-sided p-value is a 21-day block bootstrap.</p>
+</section>
+
+<section id="all">
+  <h2>All 18 combinations</h2>
+  <p class="sub">Three assets, three timing variants and two models. P feeds the model the news dated the same day, as the paper describes. S uses only news published before the close (strict). L feeds the model the next day's news, a deliberate look-ahead. Filter, sort, and compare each Sharpe with the paper's and with random trading.</p>
+  <div class="controls">
+    <div><span class="cl" id="a1">Asset</span><div class="seg" id="aSeg" role="group" aria-labelledby="a1"></div></div>
+    <div><span class="cl" id="a2">Timing</span><div class="seg" id="vSeg" role="group" aria-labelledby="a2"></div></div>
+    <div><span class="cl" id="a3">Model</span><div class="seg" id="mSeg" role="group" aria-labelledby="a3"></div></div>
+  </div>
+  <div class="panel"><svg id="strip" viewBox="0 0 700 300" role="img" aria-label="Sharpe ratio of each selected combination, with the paper's reported value and the random-sign 95th percentile"></svg>
+    <div class="legend"><span><i style="background:var(--bluefill)"></i>Replication, XGBoost</span><span><i style="background:var(--gray)"></i>Replication, logistic</span><span><i style="background:var(--ink);border-radius:0;transform:rotate(45deg)"></i>Paper, reported</span><span>Tick: 95th percentile of 20 random-sign strategies</span></div>
+    <p class="legend" id="stripTip" aria-live="polite">Select a dot for detail.</p></div>
+  <div class="panel tablewrap" style="margin-top:12px"><table id="allTbl"></table></div>
+  <p class="legend">Sharpe is annualised on the pooled out-of-sample daily returns. "Random-sign p95" is the 95th percentile of 20 random-sign strategies on the same days at identical costs. Where the twins are negative (ZN), frequent position changes at 0.05% per round trip are costly.</p>
+</section>
+
+<section id="growth">
+  <h2>Growth of $1</h2>
+  <p class="sub">The replication's XGBoost strategy under the paper's timing, net of costs, on a log scale. The dashed line is constant growth at the paper's reported CAGR over the same dates, drawn for scale only; it is not the original's equity curve.</p>
+  <div class="controls">
+    <div><span class="cl" id="g1">Asset</span><div class="seg" id="gSeg" role="group" aria-labelledby="g1"></div></div>
+    <label class="chk"><input type="checkbox" id="showM"> Add the post hoc price-feature shift illustration</label>
+  </div>
+  <div class="panel"><svg id="gSvg" viewBox="0 0 700 320" role="img" aria-label="Growth of one dollar for the replication strategy against the reported growth rate"></svg>
+    <div class="legend" id="gLeg"></div></div>
+</section>
+
+<section id="why">
+  <h2>The news-timing hypothesis was rejected, and one candidate explanation</h2>
+  <p class="sub">The pre-registered hypothesis was that the reported performance came from timing: the described method would fail while a one-day look-ahead would reproduce it. The data rejected the second half. Variant L, which sees a full day of future news, also earns nothing.</p>
+  <div class="two">
+    <figure><img src="img/fig_sharpe.png" width="1040" height="540" alt="Sharpe ratios by explanation for EUR/USD, USD/JPY and 10-year Treasury futures. The reported values are 5.87, 4.65 and 4.65. The three news timing variants sit near zero within the random-sign band. A price-feature shift on all days gives 17.8, 16.0 and 15.2, and on some days gives 5.7, 5.4 and 3.6." loading="lazy"><figcaption>Sharpe ratio by explanation (replication paper, Figure 1). <a href="img/fig_sharpe.pdf">PDF</a></figcaption></figure>
+    <figure><img src="img/fig_cumulative.png" width="1040" height="400" alt="Growth of one dollar on a log scale for the replication's XGBoost strategy, flat to slightly down for all three assets, against dashed lines of constant growth at the reported rates." loading="lazy"><figcaption>Growth of $1 against reported growth (replication paper, Figure 2). <a href="img/fig_cumulative.pdf">PDF</a></figcaption></figure>
+  </div>
+  <h3>Post hoc candidate explanation: a one-row shift in a price feature</h3>
+  <div class="posthoc"><p style="margin:0 0 8px"><b>Not pre-registered, and not a claim about what the original code did.</b> The original code was not available for comparison, so nothing here shows how its results arose. This is an illustration of magnitude: if the lagged-return feature were shifted by a single row, so that it equalled the next day's return (the target), the same pipeline would learn it directly.</p>
+  <p style="margin:0">Re-running variant P with only that change gives Sharpe ratios of <b class="num" id="mE"></b> (EUR/USD), <b class="num" id="mJ"></b> (USD/JPY) and <b class="num" id="mZ"></b> (ZN), with win rates of 91 to 98%, as saved in the daily-returns file. Applying the shift to only a share of days gives numbers of the reported order (5.7, 5.4 and 3.6, per the replication paper's Figure 1). It shows how a one-line error of that kind produces figures of this size, whereas no treatment of the news timing does. Other possible causes could only be assessed with the original code.</p></div>
+</section>
+
+<section id="design">
+  <h2>How the replication was set up</h2>
+  <div class="flow">
+    <div><b>1. Events and headlines</b>GDELT 1.0 daily exports, 2015 to October 2024. Event codes 100-199, top 100 per day. Headlines come from article URL slugs; on the 389 of 1,000 sampled links that still had a live title, slug and title FinBERT scores correlate 0.66.</div>
+    <div><b>2. Features and models</b>FinBERT polarity, daily aggregates, lags, moving averages and the lagged return. Logistic regression and XGBoost under a five-fold expanding-window split. Long if the predicted probability exceeds 0.5, otherwise short, with the paper's costs.</div>
+    <div><b>3. Pre-registered verdicts</b>Replicated if variant P has Sharpe of at least 2 on two of three assets. Not replicated, explained by leakage, if P is below 1 everywhere and L at least 2 on two assets. Not replicated, unexplained, if P is below 1 everywhere and L below 2. Outcome: the third.</div>
+  </div>
+  <p class="sub" style="margin-top:14px">The full design, committed before any sentiment or model result existed, is in <a href="https://github.com/coderback/zhang2025-replication/blob/main/preregistration/PREREGISTRATION.md">preregistration/PREREGISTRATION.md</a>. An independent replication, Andrews (2026, <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6426038">SSRN 6426038</a>), also found no predictive power, on EUR/USD and other assets. This one adds USD/JPY and 10-year Treasury futures with the paper's event filter, and a direct test of news timing.</p>
+</section>
+
+<section id="limits">
+  <h2>Limits, stated plainly</h2>
+  <ul class="cav">
+    <li><b>A rebuild from the paper's text.</b> The paper's code repository was not available when this was written, so the pipeline was reconstructed. Choices the paper leaves open (hyperparameter grid, inner folds, token limit) are the replication's and are listed in the repo.</li>
+    <li><b>Headlines are from URL slugs, not scraped pages.</b> Link rot makes scraping a decade of articles impractical. The validation above suggests the daily index is a close proxy, and Andrews (2026), who scraped headlines, also finds no signal.</li>
+    <li><b>The sample ends in September 2024</b>, not April 2025, because later data is reserved as a hold-out in the author's wider research programme.</li>
+    <li><b>The one-row shift is an illustration</b> designed after the main results and outside the pre-registered verdict.</li>
+    <li><b>Not investment advice.</b> This is a methods replication of a published claim.</li>
+  </ul>
+</section>
+</div></main>
+
+<footer><div class="wrap">
+  Code, pre-registration, FinBERT scores and results: <a href="https://github.com/coderback/zhang2025-replication">github.com/coderback/zhang2025-replication</a> (MIT licence for code). Original paper: Zhang (2025), <a href="https://arxiv.org/abs/2505.16136">arXiv:2505.16136</a>. GDELT data is subject to the GDELT Project's terms; FinBERT is ProsusAI/finbert. Raw GDELT data and prices are not redistributed here.
+</div></footer>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const sgn=(v,d=2)=>(v<0?"−":v>0?"+":"")+Math.abs(v).toFixed(d);
+const AN={EURUSD:"EUR/USD",USDJPY:"USD/JPY",ZN:"10y Treasury (ZN)"}, VN={P:"P, paper timing",S:"S, strict",L:"L, look-ahead"};
+const PAPER={EURUSD:{sharpe:5.87,win:.727,cagr:.554},USDJPY:{sharpe:4.65,win:.721,cagr:.532},ZN:{sharpe:4.65,win:.661,cagr:.221}};
+let D=null,fa=new Set(Object.keys(AN)),fv=new Set(["P","S","L"]),fm=new Set(["xgb","logit"]),ga="EURUSD";
+fetch("data/site-data.json").then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{D=d;init()}).catch(()=>{$("#err").style.display="block"});
+
+function chips(id,items,set,cb){const b=$(id);b.innerHTML="";items.forEach(([k,l])=>{const x=document.createElement("button");x.type="button";x.textContent=l;x.setAttribute("aria-pressed",set.has(k));x.onclick=()=>{set.has(k)?set.delete(k):set.add(k);chips(id,items,set,cb);cb()};b.appendChild(x)})}
+function init(){
+  const g=(a)=>D.rows.find(r=>r.asset===a&&r.variant==="P"&&r.model==="xgb");
+  $("#headTbl").innerHTML=`<thead><tr><th class="l">Asset</th><th>Paper Sharpe</th><th>Replication Sharpe</th><th>Paper win rate</th><th>Replication win rate</th><th>Replication p</th></tr></thead><tbody>`+
+   Object.keys(AN).map(a=>{const r=g(a);return `<tr><td class="l"><b>${AN[a]}</b></td><td class="num">${PAPER[a].sharpe.toFixed(2)}</td><td class="num neg"><b>${sgn(r.sharpe)}</b></td><td class="num">${(PAPER[a].win*100).toFixed(1)}%</td><td class="num">${(r.win*100).toFixed(1)}%</td><td class="num">${r.p.toFixed(2)}</td></tr>`}).join("")+`</tbody>`;
+  chips("#aSeg",Object.entries(AN),fa,renderAll); chips("#vSeg",Object.entries(VN),fv,renderAll); chips("#mSeg",[["xgb","XGBoost"],["logit","Logistic"]],fm,renderAll);
+  const gs=$("#gSeg");Object.entries(AN).forEach(([k,l])=>{const b=document.createElement("button");b.type="button";b.textContent=l;b.setAttribute("aria-pressed",k===ga);b.onclick=()=>{ga=k;[...gs.children].forEach(c=>c.setAttribute("aria-pressed",c===b));renderGrowth()};gs.appendChild(b)});
+  $("#showM").addEventListener("input",renderGrowth);
+  $("#mE").textContent=D.series.EURUSD_M.sharpe.toFixed(1);$("#mJ").textContent=D.series.USDJPY_M.sharpe.toFixed(1);$("#mZ").textContent=D.series.ZN_M.sharpe.toFixed(1);
+  renderAll();renderGrowth();
+}
+function rows(){return D.rows.filter(r=>fa.has(r.asset)&&fv.has(r.variant)&&fm.has(r.model))}
+function renderAll(){
+  const R=rows();
+  $("#allTbl").innerHTML=`<thead><tr><th class="l">Asset</th><th class="l">Timing</th><th class="l">Model</th><th>Sharpe</th><th>CAGR</th><th>Max drawdown</th><th>Win rate</th><th>Days</th><th>p</th><th>Random-sign p95</th></tr></thead><tbody>`+
+   R.map(r=>`<tr><td class="l">${AN[r.asset]}</td><td class="l">${r.variant}</td><td class="l">${r.model==="xgb"?"XGBoost":"Logistic"}</td><td class="num ${r.sharpe<0?"neg":""}"><b>${sgn(r.sharpe)}</b></td><td class="num">${sgn(r.cagr*100,1)}%</td><td class="num">${(r.max_dd*100).toFixed(0)}%</td><td class="num">${(r.win*100).toFixed(1)}%</td><td class="num">${r.days}</td><td class="num">${r.p.toFixed(2)}</td><td class="num">${sgn(r.twin_p95)}</td></tr>`).join("")+`</tbody>`||"";
+  if(!R.length)$("#allTbl").innerHTML='<tbody><tr><td class="l">Select at least one asset, timing and model.</td></tr></tbody>';
+  const W=700,L=190,Rm=24,T=16,rh=22,H=T+Math.max(R.length,1)*rh+40,lo=-2,hi=8,x=v=>L+(v-lo)/(hi-lo)*(W-L-Rm);
+  const sv=$("#strip");sv.setAttribute("viewBox",`0 0 ${W} ${H}`);let s="";
+  [-2,0,2,4,6,8].forEach(v=>{s+=`<line class="g" x1="${x(v)}" x2="${x(v)}" y1="${T-6}" y2="${H-30}" ${v===0?'style="stroke:var(--muted)"':""}/><text x="${x(v)}" y="${H-14}" text-anchor="middle">${v}</text>`});
+  s+=`<text x="${(L+W)/2}" y="${H-1}" text-anchor="middle">Annualised Sharpe ratio, net of costs</text>`;
+  R.forEach((r,i)=>{const y=T+i*rh+10,pp=PAPER[r.asset].sharpe,col=r.model==="xgb"?"var(--bluefill)":"var(--gray)";
+   s+=`<text class="lbl" x="${L-8}" y="${y+4}" text-anchor="end">${r.asset==="ZN"?"ZN":AN[r.asset]} ${r.variant} ${r.model==="xgb"?"XGB":"Logit"}</text>
+   <line x1="${x(r.twin_p95)}" x2="${x(r.twin_p95)}" y1="${y-7}" y2="${y+7}" stroke="var(--muted)" stroke-width="2"/>
+   <rect x="${x(pp)-4}" y="${y-4}" width="8" height="8" fill="var(--ink)" transform="rotate(45 ${x(pp)} ${y})" opacity=".55"/>
+   <circle class="pt" tabindex="0" role="button" data-i="${i}" aria-label="${AN[r.asset]} ${r.variant} ${r.model}: Sharpe ${r.sharpe.toFixed(2)}" cx="${x(r.sharpe)}" cy="${y}" r="5.5" fill="${col}"/>`});
+  sv.innerHTML=s;
+  sv.querySelectorAll(".pt").forEach(c=>{const r=R[+c.dataset.i];const f=()=>{$("#stripTip").innerHTML=`<b>${AN[r.asset]}, variant ${r.variant}, ${r.model==="xgb"?"XGBoost":"logistic"}</b>: Sharpe ${sgn(r.sharpe)}, win ${(r.win*100).toFixed(1)}%, p ${r.p.toFixed(2)}, random-sign p95 ${sgn(r.twin_p95)}. Paper reported ${PAPER[r.asset].sharpe.toFixed(2)}.`};c.addEventListener("mouseenter",f);c.addEventListener("focus",f);c.addEventListener("click",f)});
+}
+function renderGrowth(){
+  const P=D.series[ga+"_P"],M=D.series[ga+"_M"],showM=$("#showM").checked,pc=PAPER[ga].cagr;
+  const t0=new Date(P.d[0]).getTime(),t1=new Date(P.d[P.d.length-1]).getTime(),yrs=(t1-t0)/31557600000;
+  const ref=[[t0,1],[t1,Math.pow(1+pc,yrs)]];
+  const W=700,H=320,L=48,B=30,T=12,Rm=16;
+  const hiV=Math.max(ref[1][1],showM?Math.max(...M.g):0,Math.max(...P.g)),loV=Math.min(.5,Math.min(...P.g)*.95);
+  const ly=v=>Math.log(v),y=v=>H-B-(ly(v)-ly(loV))/(ly(hiV*1.1)-ly(loV))*(H-B-T),x=t=>L+(t-t0)/(t1-t0)*(W-L-Rm);
+  let s="";const ticks=[.5,1,2,5,10,20,50,100,200,500,1000,2000,5000].filter(v=>v>=loV&&v<=hiV*1.1);
+  ticks.forEach(v=>{s+=`<line class="g" x1="${L}" x2="${W-Rm}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`});
+  for(let yr=2017;yr<=2024;yr+=1){const t=new Date(yr+"-01-01").getTime();if(t>t0&&t<t1)s+=`<text x="${x(t)}" y="${H-10}" text-anchor="middle">${yr}</text>`}
+  const path=(ser)=>ser.d.map((d,i)=>(i?"L":"M")+x(new Date(d).getTime()).toFixed(1)+" "+y(ser.g[i]).toFixed(1)).join("");
+  s+=`<line x1="${x(ref[0][0])}" y1="${y(1)}" x2="${x(ref[1][0])}" y2="${y(ref[1][1])}" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5"/>`;
+  s+=`<path d="${path(P)}" fill="none" stroke="var(--bluefill)" stroke-width="2"/>`;
+  if(showM)s+=`<path d="${path(M)}" fill="none" stroke="var(--redfill)" stroke-width="2"/>`;
+  $("#gSvg").innerHTML=s;
+  $("#gLeg").innerHTML=`<span><i style="background:var(--bluefill)"></i>Replication, variant P, XGBoost: ends at $${P.g[P.g.length-1].toFixed(2)} (Sharpe ${sgn(P.sharpe)})</span><span><i style="background:var(--muted)"></i>Reported CAGR of ${(pc*100).toFixed(1)}% held constant: $${ref[1][1].toFixed(0)}</span>`+(showM?`<span><i style="background:var(--redfill)"></i>Post hoc one-row shift: ends at $${Math.round(M.g[M.g.length-1]).toLocaleString()} (Sharpe ${sgn(M.sharpe,1)}). Illustration only.</span>`:"");
+}
+</script>
+</body>
+</html>
