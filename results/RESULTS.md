@@ -65,8 +65,10 @@ paper's costs:
 - **Data volume:** 3,561 of 3,563 GDELT daily files (2 missing at source), with 365,026 (SQLDATE) and 356,100
   (DATEADDED) top-100 rows. 237,618 unique headlines were scored with ProsusAI/finbert.
 - **Window:** ends 2024-09-30 (the project's hold-out starts 2024-10), not April 2025 as in the paper. The first
-  out-of-sample day is mid-2016, earlier than the paper's c. 2017, because TimeSeriesSplit(5) splits the shorter
-  sample differently.
+  out-of-sample day is mid-2016, earlier than the paper's c. 2017. The paper states both TimeSeriesSplit(5) and a
+  first training period of about two years, which conflict: on its stated sample (January 2015 to April 2025) the
+  split would start testing in late August or early September 2016 (estimated from our row counts, 2026-11-07).
+  We follow TimeSeriesSplit(5).
 - **Hyperparameter grids:** our choice (the paper gives none). The logistic baseline, which has almost nothing to
   tune, is also negative.
 

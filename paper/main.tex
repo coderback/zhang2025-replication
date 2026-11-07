@@ -17,7 +17,7 @@
 Code, pre-registration, FinBERT scores and results: \url{https://github.com/coderback/zhang2025-replication}. I thank the GDELT Project and the authors of FinBERT for
 public data and models. I used Anthropic's Claude to assist with code and drafting; I verified all design choices,
 results and conclusions and take full responsibility for them. All errors are mine.}}
-\date{October 2026}
+\date{November 2026}
 
 \begin{document}
 \maketitle
@@ -34,7 +34,8 @@ pre-registered test, the XGBoost strategy earns Sharpe ratios of $-0.43$, $-0.05
 $0.02$. A variant that deliberately feeds the model the \emph{next} day's news also earns nothing, so misaligned news
 timing cannot explain the reported performance; this rejects my own pre-registered hypothesis that it would. In a
 post hoc illustration, a one-row shift in the lagged-return feature produces Sharpe ratios of 15--18, and applying
-it to a random 39--48\% of days yields win rates and Sharpe ratios of the reported order. The reported results are
+it to a random 39--48\% of days, a share chosen to match the reported win rates, yields Sharpe ratios of the reported
+order. The reported results are
 therefore unlikely to come from news sentiment. The findings agree with an independent replication by
 \citet{andrews2026}, which tested EUR/USD, and extend it to the paper's other two assets and to a direct test of the
 timing mechanism.
@@ -49,7 +50,7 @@ Out-of-sample return predictability is notoriously weak, for exchange rates \cit
 premium \citep{goyal2024}. A cost-adjusted Sharpe ratio near six from public news data would therefore be an
 extraordinary result. \citet{zhang2025} reports exactly that. It combines the GDELT event database, the FinBERT
 language model \citep{araci2019} and gradient-boosted trees \citep{chen2016}. The paper states that its code is
-public, but the linked repository was not accessible when this note was written (last checked 21~October 2026). A first
+public, but the linked repository was not accessible when this note was written (last checked 7~November 2026). A first
 independent replication \citep{andrews2026} found no predictive power. Its primary analysis kept all U.S.-related event
 types across five assets, and a second, specification-matched analysis with the paper's CAMEO 100--199 filter found no
 signal for EUR/USD (AUC 0.51, Sharpe ratio $0.10\pm0.91$ across folds). Two questions remain open:
@@ -66,7 +67,7 @@ This note makes three contributions:
   \item The design, the timing variants and the verdict criteria were pre-registered before any sentiment score or
         model output was computed. Every result is compared with random-sign strategies at identical costs.
   \item Three timing variants isolate the role of news alignment and show that it cannot generate the reported
-        numbers. A post hoc illustration shows that a simple one-line error in a price feature can.
+        numbers. A post hoc illustration shows that a shift error in a price feature, affecting part of the sample, can.
 \end{enumerate}
 
 \section{The original study}
@@ -113,8 +114,9 @@ Five features of the paper should raise a reader's prior of an error:
 \section{Replication design}
 \paragraph{Pre-registration.} The design, the three timing variants, the verdict rules and a hypothesis were
 committed on 28~September 2026 (commit \texttt{260681b}, 13:16 BST) in the author's private research repository,
-before any FinBERT score or model output existed. On local file timestamps, the first GDELT file was downloaded at
-13:17, FinBERT scoring began at 18:09 and the first model results were produced at 19:53. The text is reproduced
+before any FinBERT score or model output for this study existed. On local file timestamps, the first GDELT event
+file was downloaded at 13:17, FinBERT scoring began at 18:09 and the model results file was written at 22:07. GitHub's server-side record shows
+the commit was first pushed at 18:09 BST, before any model output existed, with no force-push since. The text is reproduced
 unchanged in the public repository, and I will give reviewers read access to the original commit on request. The
 pre-registered hypothesis was that the reported performance came from timing: the method as described would fail,
 while a one-day look-ahead in the news (variant L below) would reproduce it. The data rejected the second half of
@@ -123,73 +125,67 @@ Appendix~\ref{tab:deviations}.
 
 \paragraph{Events.} GDELT~1.0 daily event exports, 1~January 2015 to 2~October 2024 (3,561 of 3,563 files; two are
 missing at source). Events are filtered to three-digit \texttt{EventBaseCode} 100--199, and the top 100 per news day
-by \texttt{NumArticles} are kept, without de-duplication. That gives 365,026 events when days are keyed by event date
-and 356,100 when keyed by date added.
+by \texttt{NumArticles} are kept, without de-duplication. GDELT gives each event two dates, the day the event took
+place and the day it was added to the database, and a news day can be keyed by either: that gives 365,026 events by
+event date and 356,100 by date added.
 
 \paragraph{Headlines.} The original scraped each event's page. For articles up to ten years old, link rot makes that
-impractical and biased, so headline text is taken from the URL slug (the path segment with the most words, with ids
-and extensions removed).
+impractical and biased: in a random sample of 1,000 URLs, only 389 pages still return a title, so scraping would keep
+only the minority of events whose pages survive. Headlines are therefore taken from the URL slug (the path segment
+with the most words, ids and extensions removed).
 \begin{itemize}
   \item 93\% of top events yield a usable slug.
-  \item On a random sample of 1,000 URLs, only 389 pages still return a title. On those, FinBERT scores of slug and
-        title correlate 0.66 and agree in sign 84.8\% of the time.
-  \item The daily index averages about 93 headlines, so its noise from slug text is far smaller than that of
-        single headlines.
+  \item On the 389 surviving pages, FinBERT scores of slug and title correlate 0.66 and agree in sign 84.8\% of the
+        time.
+  \item The daily index averages about 93 headlines, so its noise from slug text should be far smaller than
+        that of single headlines, provided slug errors are roughly independent across headlines.
 \end{itemize}
-The 237,618 unique slugs are scored with ProsusAI/FinBERT (maximum 64 tokens, which covers slug-length text).
+The 237,618 unique slugs are scored with ProsusAI/FinBERT (64-token limit, ample for slugs).
 
-\paragraph{Features, targets and models.} Features follow Sections~3.3--3.4 of the original as specified. Prices are
-Yahoo Finance closes for \texttt{EURUSD=X}, \texttt{USDJPY=X} and \texttt{ZN=F}, as in the original. The ZN series is
-used as downloaded, without the roll adjustment the original describes. The target is
-$y_t=\mathbf{1}[\log(P_{t+1}/P_t)>0]$. Both models are tuned by an inner \texttt{TimeSeriesSplit(3)} on each
-training window only (the original uses five inner folds for XGBoost):
+\paragraph{Features, targets and models.} The models predict whether the price will be higher at the next close: the target is $y_t=\mathbf{1}[\log(P_{t+1}/P_t)>0]$. The features are those summarised in
+Section~2, built as specified in Sections~3.3--3.4 of the original. Prices are Yahoo Finance closes for
+\texttt{EURUSD=X}, \texttt{USDJPY=X} and \texttt{ZN=F}, as in the original; the ZN series is used as
+downloaded, without the roll adjustment the original describes. As in the original, testing uses an expanding window
+(\texttt{TimeSeriesSplit(5)}): the sample is cut into consecutive blocks, and each block after the first is
+predicted by a model trained on all earlier data. Within each training window, a further three-fold split
+(\texttt{TimeSeriesSplit(3)}) chooses the settings, so no test data is used for tuning. The settings searched
+are:
 \begin{itemize}
-  \item logistic regression, $C\in\{0.01,0.1,1,10\}$;
-  \item XGBoost, depth $\in\{2,3,4\}$, learning rate $\in\{0.03,0.1\}$, $\lambda\in\{1,5\}$, up to 500 trees
-        with early stopping on the last 20\% of the window.
+  \item logistic regression: regularisation parameter $C\in\{0.01,0.1,1,10\}$;
+  \item XGBoost: tree depth $\in\{2,3,4\}$, learning rate $\in\{0.03,0.1\}$ and L2 penalty $\lambda\in\{1,5\}$, with
+        up to 500 trees, the number set by early stopping on the last 20\% of the training window.
 \end{itemize}
-The outer split is \texttt{TimeSeriesSplit(5)}, as in the original.
 
 \paragraph{Timing variants.} The variants differ only in which news day feeds the prediction made at the close of
 trading day $t$:
 \begin{itemize}
-  \item \textbf{P}: events dated $t$, the original as described;
-  \item \textbf{S}: events added on the calendar day before $t$, so all news strictly predates the close;
-  \item \textbf{L}: events dated on the next trading day $t{+}1$, the same day as the return being predicted. This is
-        a deliberate look-ahead.
+  \item \textbf{P (as described)}: events dated $t$, the original's timing;
+  \item \textbf{S (strict)}: events added on the calendar day before $t$, so all news predates the close;
+  \item \textbf{L (look-ahead)}: events dated on the next trading day $t{+}1$, the same day as the return being
+        predicted. This is a deliberate look-ahead.
 \end{itemize}
-If the original's performance came from misaligned news, L should reproduce it.
 
 \paragraph{Inference.} Out-of-sample daily returns are pooled across folds (from July or August 2016, depending on
 asset and variant, to 30~September 2024). Significance is a one-sided block bootstrap with 21-day blocks. Each
-strategy is also compared with 20 random-sign strategies on the same days at the same costs. The window ends in
-September 2024, not April 2025, because later data is reserved as a hold-out in the wider research programme this
-replication belongs to (Appendix~\ref{tab:deviations}). The pre-registered verdict rules use XGBoost under variant P;
-the logistic results and the other variants are diagnostic.
+strategy is also compared with 20 random-sign twins: strategies that trade on the same days at the same costs but go
+long or short each day by a fair coin flip. They show what luck alone earns after costs, which on ZN, where costs
+are higher, is negative. The window ends in
+September 2024, not April 2025, as fixed in the pre-registration, because later data is reserved as a hold-out in the
+wider research programme behind this replication (Appendix~\ref{tab:deviations}). The pre-registered verdicts use XGBoost: \emph{replicated} if P
+reaches a Sharpe ratio of 2 on at least two assets (S then separates a genuine signal from a same-day
+timing effect); \emph{not replicated, leakage explains it} if P is below 1 everywhere and L reaches 2 on at least
+two; \emph{not replicated, unexplained} if P is below 1 everywhere and L stays below 2. Other outcomes had no pre-set
+verdict.
 
 \section{Results}
 Table~\ref{tab:headline} compares the headline numbers, Table~\ref{tab:all} reports every combination, and
 Figure~\ref{fig:cum} shows the growth of \$1 against the reported growth rates.
 The outcome is the pre-registered ``not replicated, unexplained'' verdict: P is below a Sharpe ratio of 1 on every
 asset, and L is below 2.
-\begin{itemize}
-  \item \textbf{The replication fails on every asset.} XGBoost under the original's own timing earns Sharpe ratios
-        of $-0.43$ (EUR/USD), $-0.05$ (USD/JPY) and $-0.73$ (ZN), with win rates of 48.8--51.9\%.
-  \item \textbf{Nothing is distinguishable from random trading.} Across all 18 combinations, Sharpe ratios lie
-        between $-1.00$ and $+0.02$, and win rates between 47\% and 52\%. No XGBoost strategy exceeds the 95th
-        percentile of its random-sign twins. The ZN twins are themselves negative because frequent sign changes at
-        0.05\% per round trip are costly. The one strategy above its twins' 95th percentile, logistic ZN under
-        variant L ($-0.48$ against $-0.67$), changes position on 43\% of days against the twins' 50\% and so pays
-        less in costs. Before costs its Sharpe ratio ($+0.49$) is below the twins' 95th percentile ($+0.55$, 200
-        draws), and after costs it still loses money.
-  \item \textbf{The logistic baseline is also negative.} It has almost no tuning freedom, so the failure does not
-        depend on the hyperparameter grid.
-\end{itemize}
 
 \begin{table}[t]\centering
 \caption{All combinations. Sharpe ratios of the pooled out-of-sample daily returns, net of costs; $p$ is the
-one-sided block bootstrap for XGBoost. ``Twins p95'' is the 95th percentile of 20 random-sign strategies on the same
-days at identical costs.}
+one-sided block bootstrap for XGBoost. ``Twins p95'' is the 95th percentile of the 20 random-sign twins.}
 \label{tab:all}
 \begin{tabular}{llrrrr}\toprule
 Asset & Variant & Logistic & XGBoost & XGBoost $p$ & Twins p95\\\midrule
@@ -212,10 +208,23 @@ of costs. The dashed line is constant growth at the original's reported CAGR ove
 not the original's equity curve.}\label{fig:cum}
 \end{figure}
 
+\begin{itemize}
+  \item \textbf{The replication fails on every asset.} XGBoost under the original's own timing earns Sharpe ratios
+        of $-0.43$ (EUR/USD), $-0.05$ (USD/JPY) and $-0.73$ (ZN), with win rates of 48.8--51.9\%.
+  \item \textbf{Nothing is distinguishable from random trading.} Across all 18 combinations, Sharpe ratios lie
+        between $-1.00$ and $+0.02$, and win rates between 47\% and 52\%. No XGBoost strategy exceeds the 95th
+        percentile of its random-sign twins. The one strategy above its twins' 95th percentile, logistic ZN under
+        variant L ($-0.48$ against $-0.67$), changes position on 43\% of days against the twins' 50\% and so pays
+        less in costs. Before costs its Sharpe ratio ($+0.49$) is below the twins' 95th percentile ($+0.55$, 200
+        draws), and after costs it still loses money.
+  \item \textbf{The logistic baseline is also negative.} It has almost no tuning freedom, so the failure does not
+        depend on the hyperparameter grid.
+\end{itemize}
+
 \section{What could produce the reported numbers?}
 Figure~\ref{fig:sharpe} places every explanation on one axis. The three news-timing variants sit inside the range of
-random trading, a fully shifted price feature overshoots the reported figures threefold, and a partial shift lands
-on them.
+random trading, a fully shifted price feature overshoots the reported figures threefold, and a partial shift, applied to a share
+of days chosen to match the reported win rates, comes close to them.
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=\linewidth]{fig_sharpe.pdf}
@@ -229,11 +238,13 @@ on the same days at the same costs; for ZN it lies below zero because frequent p
 \paragraph{News timing cannot.} Variant L gives the model a full day of future headlines and still earns nothing.
 Summarised as in the original, these headlines (top-coverage conflict and coercion events) carry no usable
 information about next-day FX or Treasury moves. P, S and L cover news from before, on and after the prediction day,
-and none comes close to the reported performance, so a misalignment of the news cannot explain it. The explanation
-must lie elsewhere in the pipeline.
+and none comes close to the reported performance, so a misalignment of the news cannot explain it. Any explanation
+would have to lie elsewhere, and it cannot be identified without the original code.
 
 \paragraph{A price-feature shift can (post hoc illustration).} This analysis was designed after the results above
-and was not pre-registered. The original feeds the model the lagged return $r_t$. If a one-row shift error made that
+and was not pre-registered. The original feeds the model the lagged return $r_t$ and states that its alignment ``strictly ensures no
+look-ahead bias in the feature set''; this illustration asks what would follow if an implementation error defeated
+that alignment. If a one-row shift error made that
 feature equal $r_{t+1}$, the return whose sign is the target, the pipeline would learn it directly. Re-running variant
 P with this single change gives Sharpe ratios of \MSharpeEUR{} (EUR/USD), \MSharpeJPY{} (USD/JPY) and \MSharpeZN{}
 (ZN), with win rates of \MWinRange{}. These exceed even the reported figures. A partial version of the error, such as
@@ -245,19 +256,23 @@ take the leaked position with probability $q$, choosing $q$ so that the expected
   \item ZN, $q=0.39$: win rate 64.0\%, Sharpe 3.6 (reported 66.1\% and 4.65).
 \end{itemize}
 Realised win rates land within about two points of the targets: the choice of $q$ assumes that the other days win
-half the time, while their actual win rates are 48.8--51.9\%. The reported win rates and
-Sharpe ratios are thus jointly of the order that a partial leak produces. This is one concrete form of the
+half the time, while their actual win rates are 48.8--51.9\%. The match in win rates is by
+construction, and the Sharpe ratios follow largely from the win rates: any source of a daily win rate this high,
+right or wrong regardless of the size of the move, would give Sharpe ratios of a similar order. The illustration
+therefore shows that a partial leak is sufficient to produce the reported numbers, not that it caused them. This is one concrete form of the
 ``same-day market data'' leakage that \citet{andrews2026} lists as a plausible source, and that study reports a
 related experience: bugs in its own backtest initially produced Sharpe ratios of 11--16 at an AUC of 0.50. None of this is
-evidence of what the original code did, which cannot be inspected. It shows how a one-line error of this kind
-produces numbers of the reported order, whereas no treatment of the news timing does. Other candidates, including
+evidence of what the original code did, which cannot be inspected. It shows that an error of this kind, affecting part of the
+sample, can produce numbers of the reported order, whereas none of the news timing variants does. Other candidates, including
 leakage through hyperparameter selection or feature scaling fitted on the full sample, would need the original code
 to assess.
 
 \section{Robustness and limitations}
 \begin{itemize}
-  \item \textbf{Headlines} come from URL slugs, not scraped pages. The validation above suggests the daily index
-        is a close proxy, and \citet{andrews2026}, who scraped headlines, also finds no signal.
+  \item \textbf{Headlines} come from URL slugs, not scraped pages. The validation above compares single headlines,
+        on the 389 surviving pages; the daily index itself was not compared. \citet{andrews2026}, who
+        scraped headlines, also finds no signal, but not for USD/JPY or ZN and without a timing test, so for those two
+        assets and for variant L the evidence rests on slugs alone.
   \item \textbf{The sample ends in September 2024} rather than April 2025. Even if the strategy had earned the
         reported Sharpe ratio in the missing seven months, the full-period Sharpe ratio would stay below 0.4 on every
         asset.
@@ -266,19 +281,20 @@ to assess.
         ratio near zero into one near five.
   \item \textbf{The hyperparameter grid} is mine, since the original gives none. The logistic model has almost no
         tuning freedom and is also negative.
-  \item \textbf{The first out-of-sample day} is July or August 2016 rather than ``early 2017'', because
-        \texttt{TimeSeriesSplit} divides the shorter sample differently. Restricting variant P to 2017 onwards
-        (a post hoc check) gives Sharpe ratios of $-0.42$, $+0.11$ and $-0.62$. The USD/JPY sign changes, but all
+  \item \textbf{The first out-of-sample day} is July or August 2016 rather than ``early 2017''. The original
+        states both \texttt{TimeSeriesSplit(5)} and a first training period of about two years, which conflict:
+        on its stated sample, the split would start testing in the second half of 2016. I follow
+        \texttt{TimeSeriesSplit(5)}. From 2017 onwards (a post hoc check), variant P gives Sharpe ratios of $-0.42$, $+0.11$ and $-0.62$. The USD/JPY sign changes, but all
         three stay near zero.
 \end{itemize}
 
 \section{Conclusion}
 A pre-registered replication of \citet{zhang2025}, following the original's event filter, assets and methodology,
 finds no predictive power: Sharpe ratios are near zero or negative everywhere, and win rates are at chance. Even
-deliberately leaked future news cannot reproduce the reported performance, while a single shift in a price feature
-can. Together with \citet{andrews2026}, the evidence indicates that the reported Sharpe ratios of 4.6--5.9 are
+deliberately leaked future news cannot reproduce the reported performance, while a shift in a price feature,
+affecting part of the sample, can. Together with \citet{andrews2026}, the evidence indicates that the reported Sharpe ratios of 4.6--5.9 are
 unlikely to arise from news sentiment as described. I contacted the author on 28~September 2026 to request the
-code; no reply had been received by 21~October 2026. Any reply will be reflected in a revision.
+code; no reply had been received by 7~November 2026. Any reply will be reflected in a revision.
 
 \begin{thebibliography}{9}
 \bibitem[Andrews(2026)]{andrews2026} Andrews, J.-P. (2026). A replication study of Zhang (2025): Why news sentiment
