@@ -1,5 +1,7 @@
 # Replication of Zhang (2025), "Interpretable Machine Learning for Macro Alpha"
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24087562.svg)](https://doi.org/10.5281/zenodo.24087562)
+
 A pre-registered replication of Zhang, Y. (2025), *Interpretable Machine Learning for Macro Alpha: A News Sentiment
 Case Study*, [arXiv:2505.16136](https://arxiv.org/abs/2505.16136). The paper reports cost-adjusted out-of-sample
 Sharpe ratios of 5.87 (EUR/USD), 4.65 (USD/JPY) and 4.65 (10-year Treasury futures) from FinBERT sentiment of GDELT
@@ -45,7 +47,19 @@ Yahoo Finance prices are downloaded on first run. The shipped FinBERT scores are
 rename `results/finbert_scores.parquet` to rescore (about 5 hours on a laptop CPU).
 
 ## Citation
-Ojebiyi, T. O. (2026). *Timing cannot explain it: A pre-registered replication of Zhang (2025), "Interpretable
-Machine Learning for Macro Alpha"*. Working paper. Contact: tobiojebiyi@gmail.com
+The paper:
+
+> Ojebiyi, T. O. (2026). *News timing cannot explain it: A pre-registered replication of Zhang (2025),
+> "Interpretable Machine Learning for Macro Alpha"*. Working paper.
+
+This package:
+
+> Ojebiyi, T. O. (2026). *News Timing Cannot Explain It: replication package* (version 1.0.0). Zenodo.
+> https://doi.org/10.5281/zenodo.24087562
+
+That DOI always resolves to the latest version; version 1.0.0 itself is https://doi.org/10.5281/zenodo.24087563.
+`CITATION.cff` holds the same details, and GitHub's "Cite this repository" button reads it.
+
+Contact: Timothy Oluwatobi Ojebiyi, tobiojebiyi@gmail.com, ORCID [0009-0009-7786-8549](https://orcid.org/0009-0009-7786-8549)
 
 License: MIT (code). GDELT data are subject to the GDELT Project's terms; FinBERT is ProsusAI/finbert.

@@ -3,6 +3,14 @@ title: "News Timing Cannot Explain It: replication package"
 version: 1.0.0
 license: "MIT"
 type: software
+doi: 10.5281/zenodo.24087562
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24087562
+    description: All versions (resolves to the latest)
+  - type: doi
+    value: 10.5281/zenodo.24087563
+    description: Version 1.0.0
 repository-code: "https://github.com/coderback/zhang2025-replication"
 abstract: >-
   Code, pre-registration, FinBERT scores and results for a pre-registered replication of Zhang (2025),
