@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: "News Timing Cannot Explain It: replication package"
+version: 1.0.0
+license: "MIT"
+type: software
+repository-code: "https://github.com/coderback/zhang2025-replication"
+abstract: >-
+  Code, pre-registration, FinBERT scores and results for a pre-registered replication of Zhang (2025),
+  "Interpretable Machine Learning for Macro Alpha: A News Sentiment Case Study" (arXiv:2505.16136), which
+  reports cost-adjusted Sharpe ratios of 4.6 to 5.9 from FinBERT sentiment of GDELT headlines. The
+  replication finds Sharpe ratios near zero or negative on every asset, timing and model. Nothing here is
+  investment advice.
+message: "If you use this package, please cite it as below."
+authors:
+  - given-names: Timothy Oluwatobi
+    family-names: Ojebiyi
+    affiliation: Independent researcher
+    orcid: "https://orcid.org/0009-0009-7786-8549"
+keywords:
+  - replication
+  - pre-registration
+  - news sentiment
+  - FinBERT
+  - GDELT
+  - foreign exchange
+  - reproducibility
