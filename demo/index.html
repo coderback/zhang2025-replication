@@ -52,7 +52,8 @@ h1,h2,h3{font-family:var(--serif);font-weight:700}
 .prereg{margin:0;font-family:var(--mono);font-size:13px;letter-spacing:.1em;color:var(--muted)}
 .hero h1{margin:0;font-size:clamp(34px,5.4vw,60px);line-height:1.06;letter-spacing:-.015em;max-width:1000px}
 .lede{margin:0;font-family:var(--serif);font-size:20px;line-height:1.6;color:var(--ink2);max-width:760px}
-.prov{margin:0;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:14px;color:var(--muted)}
+.prov{margin:0;font-size:14px;line-height:1.9;color:var(--muted)}
+.prov .chip{display:inline-block;margin-right:8px;line-height:1.4}
 .chip{font-family:var(--mono);font-size:12px;border:1px solid var(--ink);border-radius:999px;padding:3px 10px;color:var(--ink)}
 
 /* sections */
@@ -195,7 +196,7 @@ footer .fl a{min-height:44px;display:inline-flex;align-items:center}
   </div>
   <h1>The paper reports a Sharpe ratio of 5.87 from news sentiment. Rebuilt step by step, it earns nothing.</h1>
   <p class="lede">FinBERT sentiment of GDELT headlines, an XGBoost classifier, three assets, the paper's own filters and costs. Every one of 18 combinations fails, with win rates near a coin flip.</p>
-  <p class="prov"><span class="chip">SAVED RESULTS</span> From the repo's <span class="num">results/</span> folder; nothing runs in your browser. This page makes no claim about why the original numbers arose. <a href="#limits">Limits and sources</a></p>
+  <p class="prov"><span class="chip">SAVED RESULTS</span> <span>From the repo's <span class="num">results/</span> folder; nothing runs in your browser. This page makes no claim about why the original numbers arose. <a href="#limits">Limits and sources</a></span></p>
 </header>
 
 <div class="wrap"><div id="err" role="alert">The saved data failed to load. Please reload the page.</div></div>
