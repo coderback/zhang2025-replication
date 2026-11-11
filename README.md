@@ -2,6 +2,8 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24087562.svg)](https://doi.org/10.5281/zenodo.24087562)
 
+**Paper:** Ojebiyi (2026), SSRN working paper 7683159, posted 11 November 2026: [ssrn.com/abstract=7683159](https://ssrn.com/abstract=7683159) ([doi:10.2139/ssrn.7683159](https://doi.org/10.2139/ssrn.7683159)). Not peer reviewed.
+
 A pre-registered replication of Zhang, Y. (2025), *Interpretable Machine Learning for Macro Alpha: A News Sentiment
 Case Study*, [arXiv:2505.16136](https://arxiv.org/abs/2505.16136). The paper reports cost-adjusted out-of-sample
 Sharpe ratios of 5.87 (EUR/USD), 4.65 (USD/JPY) and 4.65 (10-year Treasury futures) from FinBERT sentiment of GDELT
@@ -50,7 +52,8 @@ rename `results/finbert_scores.parquet` to rescore (about 5 hours on a laptop CP
 The paper:
 
 > Ojebiyi, T. O. (2026). *News timing cannot explain it: A pre-registered replication of Zhang (2025),
-> "Interpretable Machine Learning for Macro Alpha"*. Working paper.
+> "Interpretable Machine Learning for Macro Alpha"*. SSRN Working Paper 7683159.
+> https://doi.org/10.2139/ssrn.7683159
 
 This package:
 
@@ -58,7 +61,7 @@ This package:
 > https://doi.org/10.5281/zenodo.24087562
 
 That DOI always resolves to the latest version; version 1.0.0 itself is https://doi.org/10.5281/zenodo.24087563.
-`CITATION.cff` holds the same details, and GitHub's "Cite this repository" button reads it.
+`CITATION.cff` holds the same details (the paper is under `references`), and GitHub's "Cite this repository" button reads it.
 
 Contact: Timothy Oluwatobi Ojebiyi, tobiojebiyi@gmail.com, ORCID [0009-0009-7786-8549](https://orcid.org/0009-0009-7786-8549)
 

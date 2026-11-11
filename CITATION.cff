@@ -32,3 +32,18 @@ keywords:
   - GDELT
   - foreign exchange
   - reproducibility
+references:
+  - type: article
+    title: >-
+      News Timing Cannot Explain It: A Pre-Registered Replication of Zhang (2025),
+      "Interpretable Machine Learning for Macro Alpha"
+    authors:
+      - given-names: Timothy Oluwatobi
+        family-names: Ojebiyi
+        orcid: "https://orcid.org/0009-0009-7786-8549"
+    journal: "SSRN Electronic Journal"
+    year: 2026
+    month: 11
+    doi: 10.2139/ssrn.7683159
+    url: "https://ssrn.com/abstract=7683159"
+    notes: "SSRN working paper 7683159, posted 11 November 2026; not peer reviewed."
